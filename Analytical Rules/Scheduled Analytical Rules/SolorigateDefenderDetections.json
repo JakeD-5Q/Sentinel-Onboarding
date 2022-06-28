@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/7547142e-8f46-4f23-9960-50c583e03666')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/7547142e-8f46-4f23-9960-50c583e03666')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "query": "DeviceInfo\n| extend DeviceName = tolower(DeviceName)\n| join (SecurityAlert\n| where ProviderName =~ \"MDATP\"\n| extend ThreatName = tostring(parse_json(ExtendedProperties).ThreatName)\n| where ThreatName has \"Solorigate\"\n| extend HostCustomEntity = tolower(CompromisedEntity)\n) on $left.DeviceName == $right.HostCustomEntity\n| project TimeGenerated, DisplayName, ThreatName, CompromisedEntity, PublicIP, MachineGroup, AlertSeverity, Description, LoggedOnUsers, DeviceId, TenantId\n| extend timestamp = TimeGenerated, IPCustomEntity = PublicIP",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "InitialAccess"
+            ],
+            "displayName": "Solorigate Defender Detections",
+            "enabled": true,
+            "description": "Surfaces any Defender Alert for Solorigate Events. In Azure Sentinel the SecurityAlerts table includes only the Device Name of the affected device, this query joins the DeviceInfo table to clearly connect other information such as \n Device group, ip, logged on users etc. This way, the Sentinel user can have all the pertinent device info in one view for all the the Solarigate Defender alerts.",
+            "alertRuleTemplateName": "e70fa6e0-796a-4e85-9420-98b17b0bb749"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

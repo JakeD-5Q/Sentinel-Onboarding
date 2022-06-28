@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/be287e62-2619-439d-a163-bc60e15d7cfa')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/be287e62-2619-439d-a163-bc60e15d7cfa')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "Medium",
+    "query": "SigninLogs \r\n| where ClientAppUsed == \"Authenticated SMTP\"\r\n| where ipv4_is_match(\"199.227.109.206\", IPAddress) == False\r\n| where ipv4_is_match(\"50.194.139.73\", IPAddress) == False \r\n| where ipv4_is_match(\"66.196.229.34\", IPAddress) == False \r\n| where ResultDescription <> \"Invalid username or password or Invalid on-premise username or password.\"\r\n| extend AccountCustomEntity = AlternateSignInName\r\n| extend IPCustomEntity = IPAddress",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "InitialAccess"
+    ],
+    "displayName": "Authenticated SMTP Sign-In Attempt Detected",
+    "enabled": true,
+    "description": "",
+    "alertRuleTemplateName": null
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

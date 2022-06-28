@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/932840dc-5322-45af-987f-3d4f460ff38c')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/932840dc-5322-45af-987f-3d4f460ff38c')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT1H",
+            "queryPeriod": "P14D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "let dt_lookBack = 1h;\nlet ioc_lookBack = 14d;\nlet emailregex = @'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$';\nThreatIntelligenceIndicator\n| where TimeGenerated >= ago(ioc_lookBack) and ExpirationDateTime > now()\n| where Active == true\n//Filtering the table for Email related IOCs\n| where isnotempty(EmailRecipient)\n| join (\n    CommonSecurityLog | where TimeGenerated >= ago(dt_lookBack) and isnotempty(DestinationUserID)\n    // Filtering PAN Logs for specific event type to match relevant email entities\n    | where DeviceVendor == \"Palo Alto Networks\" and  DeviceEventClassID == \"wildfire\" and ApplicationProtocol in (\"smtp\",\"pop3\")\n    | extend DestinationUserID = tolower(DestinationUserID)\n    | where DestinationUserID matches regex emailregex\n    | extend CommonSecurityLog_TimeGenerated = TimeGenerated\n)\non $left.EmailRecipient == $right.DestinationUserID\n| summarize LatestIndicatorTime = arg_max(TimeGenerated, *) by IndicatorId\n| project LatestIndicatorTime, Description, ActivityGroupNames, IndicatorId, ThreatType, Url, ExpirationDateTime, ConfidenceScore, CommonSecurityLog_TimeGenerated,\nEmailSenderName, EmailSourceDomain, EmailSourceIpAddress, EmailSubject, FileHashValue, FileHashType, DestinationUserID, DeviceEventClassID, LogSeverity, DeviceAction,\nSourceIP, SourcePort, DestinationIP, DestinationPort, Protocol, ApplicationProtocol\n| extend timestamp = CommonSecurityLog_TimeGenerated, AccountCustomEntity = DestinationUserID, IPCustomEntity = SourceIP, URLCustomEntity = Url",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Impact"
+            ],
+            "displayName": "(Preview) TI map Email entity to CommonSecurityLog",
+            "enabled": true,
+            "description": "Identifies a match in CommonSecurityLog table from any Email IOC from TI",
+            "alertRuleTemplateName": "ffcd575b-3d54-482a-a6d8-d0de13b6ac63"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

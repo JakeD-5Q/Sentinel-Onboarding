@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/bbe99141-f017-46b2-8730-09c54351ae1d')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/bbe99141-f017-46b2-8730-09c54351ae1d')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "Medium",
+    "query": "SigninLogs\n| where ResultDescription has \"account is locked\" or ResultType has \"50053\"\n| extend AccountCustomEntity = AlternateSignInName\n| extend IPCustomEntity = IPAddress",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "InitialAccess"
+    ],
+    "displayName": "Azure AD account locked",
+    "enabled": true,
+    "description": "",
+    "alertRuleTemplateName": null
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

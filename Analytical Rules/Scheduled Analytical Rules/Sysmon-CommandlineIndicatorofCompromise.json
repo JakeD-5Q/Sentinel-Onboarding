@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/cfad3368-c46c-4702-a7bf-01f893bd0cf5')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/cfad3368-c46c-4702-a7bf-01f893bd0cf5')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "query": "Event\r\n| where RenderedDescription has_any (\" -NoP \",\" -W Hidden \",\"vssadmin delete shadows\",\" -e* aQBlAHgA\", \"-e* PAA\",\" -e* IAB\",\" -e* aWV4I\",\" -e* SQBFAFgA\",\" -e* SUVYI\",\" -e* JAB\",\" /decode \",\" -decode \",\"whoami\",\" comsvcs.dll,#24\",\" comsvcs.dll,MiniDump\",\"schtasks* /create *AppData\",\";iex(\",\" p::d \",\" sekurlsa\",\" /ticket:\",\".downloadfile(\",\".downloadstring(\", \"webrequest\", \"shellcode\")\r\n| where RenderedDescription !has \"ngen.exe\"\r\n| extend AccountCustomEntity = UserName\r\n| extend HostCustomEntity = Computer",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Persistence",
+                "LateralMovement",
+                "CommandAndControl"
+            ],
+            "displayName": "Sysmon - Commandline Indicator of Compromise",
+            "enabled": true,
+            "description": "A suspicious commandline string has been found.",
+            "alertRuleTemplateName": null
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

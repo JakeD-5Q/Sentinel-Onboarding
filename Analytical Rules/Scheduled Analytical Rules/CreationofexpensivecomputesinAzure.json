@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/459254bc-7717-413b-a52c-d4bc4f8dbbe3')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/459254bc-7717-413b-a52c-d4bc4f8dbbe3')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 1,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Low",
+            "query": "let timeframe = 1d;\nlet tokens = dynamic([\"416\",\"208\",\"128\",\"120\",\"96\",\"80\",\"72\",\"64\",\"48\",\"44\",\"40\",\"g5\",\"gs5\",\"g4\",\"gs4\",\"nc12\",\"nc24\",\"nv12\"]);\nlet operationList = dynamic([\"Create or Update Virtual Machine\", \"Create Deployment\"]);\nAzureActivity\n| where TimeGenerated >= ago(timeframe)\n| where OperationName in (operationList)\n| where ActivityStatus == \"Accepted\" \n| where isnotempty(Properties)\n| extend vmSize = tolower(tostring(parse_json(tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).responseBody)).properties)).hardwareProfile)).vmSize))\n| where isnotempty(vmSize)\n| where vmSize has_any (tokens) \n| extend ComputerName = tostring(parse_json(tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).responseBody)).properties)).osProfile)).computerName)\n| extend clientIpAddress = tostring(parse_json(HTTPRequest).clientIpAddress)\n| project TimeGenerated, OperationName, ActivityStatus, Caller, CallerIpAddress, ComputerName, vmSize\n| extend timestamp = TimeGenerated, AccountCustomEntity = Caller, IPCustomEntity = CallerIpAddress",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "DefenseEvasion"
+            ],
+            "displayName": "Creation of expensive computes in Azure",
+            "enabled": true,
+            "description": "Identifies the creation of large size/expensive VMs (GPU or with large no of virtual CPUs) in Azure.\nAdversary may create new or update existing virtual machines sizes to evade defenses \nor use it for cryptomining purposes.\nFor Windows/Linux Vm Sizes - https://docs.microsoft.com/azure/virtual-machines/windows/sizes \nAzure VM Naming Conventions - https://docs.microsoft.com/azure/virtual-machines/vm-naming-conventions",
+            "alertRuleTemplateName": "9736e5f1-7b6e-4bfb-a708-e53ff1d182c3"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

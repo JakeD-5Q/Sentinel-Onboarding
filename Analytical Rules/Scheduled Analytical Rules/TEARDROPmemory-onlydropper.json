@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b7340f29-b04e-48e3-b70a-43c67541ab49')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/b7340f29-b04e-48e3-b70a-43c67541ab49')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "entityMappings": [
+        {
+            "entityType": "Account",
+            "fieldMappings": [
+                {
+                    "identifier": "FullName",
+                    "columnName": "AccountCustomEntity"
+                }
+            ]
+        },
+        {
+            "entityType": "Host",
+            "fieldMappings": [
+                {
+                    "identifier": "FullName",
+                    "columnName": "HostCustomEntity"
+                }
+            ]
+        },
+        {
+            "entityType": "FileHash",
+            "fieldMappings": [
+                {
+                    "identifier": "Algorithm",
+                    "columnName": "FileHashType"
+                },
+                {
+                    "identifier": "Value",
+                    "columnName": "FileHashCustomEntity"
+                }
+            ]
+        }
+    ],
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "High",
+    "query": "DeviceEvents\n| where ActionType has \"ExploitGuardNonMicrosoftSignedBlocked\"\n| where InitiatingProcessFileName contains \"svchost.exe\" and FileName contains \"NetSetupSvc.dll\"\n| extend timestamp = TimeGenerated, AccountCustomEntity = iff(isnotempty(InitiatingProcessAccountUpn), InitiatingProcessAccountUpn, InitiatingProcessAccountName),\nHostCustomEntity = DeviceName, FileHashCustomEntity = InitiatingProcessSHA1, FileHashType = \"SHA1\"",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "Execution",
+        "Persistence"
+    ],
+    "displayName": "TEARDROP memory-only dropper",
+    "enabled": true,
+    "description": "Identifies SolarWinds TEARDROP memory-only dropper IOCs in Window's defender Exploit Guard activity\nReferences:\n- https://www.fireeye.com/blog/threat-research/2020/12/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor.html\n- https://gist.github.com/olafhartong/71ffdd4cab4b6acd5cbcd1a0691ff82f",
+    "alertRuleTemplateName": "738702fd-0a66-42c7-8586-e30f0583f8fe"
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

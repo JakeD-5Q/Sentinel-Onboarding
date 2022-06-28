@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/0871c573-7896-48d0-a9ca-2940dada6eb5')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/0871c573-7896-48d0-a9ca-2940dada6eb5')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5M",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P14D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "severity": "Medium",
+            "query": "let lookBack = 14d;\nlet timeframe = 1d;\nlet user_agents_list = Cisco_Umbrella\n| where EventType == \"proxylogs\"\n| where TimeGenerated > ago(lookBack) and TimeGenerated < ago(timeframe)\n| summarize count() by HttpUserAgentOriginal\n| summarize make_list(HttpUserAgentOriginal);\nCisco_Umbrella\n| where EventType == \"proxylogs\"\n| where TimeGenerated > ago(timeframe)\n| where HttpUserAgentOriginal !in (user_agents_list)\n| extend Message = \"Rare User Agent\"\n| project Message, SrcIpAddr, DstIpAddr, UrlOriginal, TimeGenerated, HttpUserAgentOriginal\n| extend IpCustomEntity = SrcIpAddr, UrlCustomEntity = UrlOriginal\n",
+            "suppressionDuration": "PT1H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "CommandAndControl"
+            ],
+            "displayName": "Cisco Umbrella - Rare User Agent Detected",
+            "enabled": false,
+            "description": "Rule helps to detect a rare user-agents indicating web browsing activity by an unusual process other than a web browser.",
+            "alertRuleTemplateName": null
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

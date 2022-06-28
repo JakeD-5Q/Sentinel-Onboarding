@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/f142ba97-0aba-49d1-b204-c6ba5c596452')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f142ba97-0aba-49d1-b204-c6ba5c596452')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "Email messages containing malicious URL removed after delivery​",
+                "order": 32,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/7850db0f-d4bc-4747-ae91-97f3a65dad82')]"
+                            }
+                        },
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "MailMessageSubject",
+                                "operator": "Equals",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/You have been assigned Service Request T20220110.0267')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": "Closed",
+                            "classification": "BenignPositive",
+                            "classificationReason": "SuspiciousButExpected",
+                            "classificationComment": "This email is the autotask notification about a CR that needs to be completed.",
+                            "owner": null,
+                            "labels": null
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": null,
+                            "classification": null,
+                            "classificationReason": null,
+                            "classificationComment": null,
+                            "owner": {
+                                "objectId": "8ca2fbd0-263f-4bb8-86f5-6eee0ca77f74",
+                                "email": "Sentinel@5qcloud.com",
+                                "assignedTo": "Sentinel",
+                                "userPrincipalName": "Sentinel@5qcloud.com"
+                            },
+                            "labels": null
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

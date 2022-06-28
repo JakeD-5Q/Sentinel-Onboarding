@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/0cd9efbb-42d5-465e-8473-3bd3f1c0a373')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/0cd9efbb-42d5-465e-8473-3bd3f1c0a373')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "let timeframe = 1d;\nlet spanoftime = 10m;\nlet threshold = 0;\nSecurityEvent \n| where TimeGenerated > ago(2*timeframe) \n// A user account was created\n| where EventID == 4720\n| where AccountType =~ \"User\"\n| project creationTime = TimeGenerated, CreateEventID = EventID, Activity, Computer, TargetUserName, UserPrincipalName, \nAccountUsedToCreate = SubjectUserName, TargetSid, SubjectUserSid \n| join kind= inner (\n  SecurityEvent\n  | where TimeGenerated > ago(timeframe) \n  // A user account was deleted \n  | where EventID == 4726\n| where AccountType == \"User\"\n| project deletionTime = TimeGenerated, DeleteEventID = EventID, Activity, Computer, TargetUserName, UserPrincipalName, \nAccountUsedToDelete = SubjectUserName, TargetSid, SubjectUserSid \n) on Computer, TargetUserName\n| where deletionTime - creationTime < spanoftime\n| extend TimeDelta = deletionTime - creationTime\n| where tolong(TimeDelta) >= threshold\n| project TimeDelta, creationTime, CreateEventID, Computer, TargetUserName, UserPrincipalName, AccountUsedToCreate, \ndeletionTime, DeleteEventID, AccountUsedToDelete\n| extend timestamp = creationTime, AccountCustomEntity = AccountUsedToCreate, HostCustomEntity = Computer",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Persistence",
+                "PrivilegeEscalation"
+            ],
+            "displayName": "User account created and deleted within 10 mins",
+            "enabled": true,
+            "description": "Identifies when a user account is created and then deleted within 10 minutes. This can be an indication of compromise and\nan adversary attempting to hide in the noise.",
+            "alertRuleTemplateName": "4b93c5af-d20b-4236-b696-a28b8c51407f"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

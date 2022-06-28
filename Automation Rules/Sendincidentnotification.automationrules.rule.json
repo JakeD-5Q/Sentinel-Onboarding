@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/c6721603-6173-4693-95cc-e0e8c7a2abb1')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/c6721603-6173-4693-95cc-e0e8c7a2abb1')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "Send incident notification",
+                "order": 1,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                "conditions": []
+            },
+            "actions": [
+                {
+                    "order": 1,
+                    "actionType": "RunPlaybook",
+                    "actionConfiguration": {
+                        "logicAppResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/resourceGroup().name/providers/Microsoft.Logic/workflows/', 'PostMessageTeams')]",
+                        "tenantId": "f1a966c9-8958-4e13-bc44-f54c47cdbf9a"
+                    }
+                },
+                {
+                    "order": 2,
+                    "actionType": "RunPlaybook",
+                    "actionConfiguration": {
+                        "logicAppResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/resourceGroup().name/providers/Microsoft.Logic/workflows/', '5QC.Send-email-with-formatted-incident-report')]",
+                        "tenantId": "f1a966c9-8958-4e13-bc44-f54c47cdbf9a"
+                    }
+                }
+            ]
+        }
+    }
+]
+}

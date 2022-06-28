@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/461b19f3-37e2-4333-bf4e-852d18663cd2')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/461b19f3-37e2-4333-bf4e-852d18663cd2')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT1H",
+            "queryPeriod": "P14D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "let dt_lookBack = 1h;\nlet ioc_lookBack = 14d;\nThreatIntelligenceIndicator\n| where TimeGenerated >= ago(ioc_lookBack) and ExpirationDateTime > now()\n| where Active == true\n// Picking up only IOC's that contain the entities we want\n| where isnotempty(Url)\n| join (\n  Syslog\n  | where TimeGenerated >= ago(dt_lookBack)\n  // Extract URL from the Syslog message but only take messages that include URLs\n  | extend Url = extract(\"(http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\\\(\\\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)\", 1,SyslogMessage)\n  | where isnotempty(Url)\n  | extend Syslog_TimeGenerated = TimeGenerated\n) on Url\n| summarize LatestIndicatorTime = arg_max(TimeGenerated, *) by IndicatorId\n| project LatestIndicatorTime, Description, ActivityGroupNames, IndicatorId, ThreatType, ExpirationDateTime, ConfidenceScore, Syslog_TimeGenerated, SyslogMessage, Computer, ProcessName, Url, HostIP\n| extend timestamp = Syslog_TimeGenerated, HostCustomEntity = Computer, IPCustomEntity = HostIP, URLCustomEntity = Url",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Impact"
+            ],
+            "displayName": "(Preview) TI map URL entity to Syslog data",
+            "enabled": true,
+            "description": "Identifies a match in Syslog data from any URL IOC from TI",
+            "alertRuleTemplateName": "b31037ea-6f68-4fbd-bab2-d0d0f44c2fcf"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

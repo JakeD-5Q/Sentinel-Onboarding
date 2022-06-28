@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b7ed79f3-59a4-4102-9451-3fe758eb3267')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/b7ed79f3-59a4-4102-9451-3fe758eb3267')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "entityMappings": [
+        {
+            "entityType": "AzureResource",
+            "fieldMappings": [
+                {
+                    "identifier": "ResourceId",
+                    "columnName": "ResultDescription"
+                }
+            ]
+        },
+        {
+            "entityType": "IP",
+            "fieldMappings": [
+                {
+                    "identifier": "Address",
+                    "columnName": "IPAddress"
+                }
+            ]
+        }
+    ],
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "Medium",
+    "query": "SigninLogs\r\n| where Location <> \"US\"\r\n| where Identity <> \"On-Premises Directory Synchronization Service Account\"\r\n| where AppDisplayName <> \"CortanaUWPClient\"\r\n| where Status.failureReason <> \"User did not pass the MFA challenge.\"\r\n| where Status.failureReason <> \"Other\"\r\n| where ResultDescription <> \"Invalid username or password or Invalid on-premise username or password.\"\r\n| where IPAddress !in~ (\"168.215.171.118\", \"174.78.66.194\", \"199.227.109.206\", \"38.88.160.194\", \"50.194.139.73\", \"50.236.230.214\", \"52.43.213.224\", \"174.242.74.56\", \"73.166.57.76\", \"96.78.21.25\", \"100.67.13.4\", \"72.189.204.200\", \"47.187.71.167\", \"104.189.147.122\", \"97.99.9.61\", \"24.125.196.245\", \"24.99.48.14\", \"71.56.79.103\")\r\n| extend AccountCustomEntity = AlternateSignInName\r\n| extend IPCustomEntity = IPAddress",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "InitialAccess"
+    ],
+    "displayName": "Azure AD event outside of U.S.",
+    "enabled": true,
+    "description": "",
+    "alertRuleTemplateName": null
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/466454c2-56fc-46fb-844e-c634e60cafc5')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/466454c2-56fc-46fb-844e-c634e60cafc5')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "let lookBack = 1d;\nSigninLogs \n| where TimeGenerated >= ago(lookBack)\n| where ResultType == \"50057\" \n| where ResultDescription == \"User account is disabled. The account has been disabled by an administrator.\" \n| summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated), disabledAccountLoginAttempts = count(), \ndisabledAccountsTargeted = dcount(UserPrincipalName), applicationsTargeted = dcount(AppDisplayName), disabledAccountSet = makeset(UserPrincipalName), \napplicationSet = makeset(AppDisplayName) by IPAddress\n| order by disabledAccountLoginAttempts desc\n| join kind= leftouter (\n    // Consider these IPs suspicious - and alert any related  successful sign-ins\n    SigninLogs\n    | where TimeGenerated >= ago(lookBack)\n    | where ResultType == 0\n    | summarize successfulAccountSigninCount = dcount(UserPrincipalName), successfulAccountSigninSet = makeset(UserPrincipalName, 15) by IPAddress\n    // Assume IPs associated with sign-ins from 100+ distinct user accounts are safe\n    | where successfulAccountSigninCount < 100\n) on IPAddress  \n// IPs from which attempts to authenticate as disabled user accounts originated, and had a non-zero success rate for some other account\n| where successfulAccountSigninCount != 0\n| project StartTimeUtc, EndTimeUtc, IPAddress, disabledAccountLoginAttempts, disabledAccountsTargeted, disabledAccountSet, applicationSet, \nsuccessfulAccountSigninCount, successfulAccountSigninSet\n| order by disabledAccountLoginAttempts\n| extend timestamp = StartTimeUtc, IPCustomEntity = IPAddress",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "InitialAccess",
+                "Persistence"
+            ],
+            "displayName": "Sign-ins from IPs that attempt sign-ins to disabled accounts",
+            "enabled": true,
+            "description": "Identifies IPs with failed attempts to sign in to one or more disabled accounts signed in successfully to another account.\nReferences: https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-sign-ins-error-codes\n50057 - User account is disabled. The account has been disabled by an administrator.",
+            "alertRuleTemplateName": "500c103a-0319-4d56-8e99-3cec8d860757"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

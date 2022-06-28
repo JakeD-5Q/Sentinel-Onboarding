@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/a5ac203c-99b1-4d5b-bc7e-08272f882c67')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/a5ac203c-99b1-4d5b-bc7e-08272f882c67')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5M",
+                        "matchingMethod": "Selected",
+                        "groupByEntities": [
+                            "IP"
+                        ],
+                        "groupByAlertDetails": [
+                            "DisplayName"
+                        ],
+                        "groupByCustomDetails": null
+                    }
+                },
+                "customDetails": {
+                    "Protocol": "Protocol",
+                    "Sensor": "DeviceId"
+                },
+                "entityMappings": [
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "SourceDeviceAddress"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "DestDevcieAddress"
+                            }
+                        ]
+                    }
+                ],
+                "alertDetailsOverride": {
+                    "alertDisplayNameFormat": "(MDIoT) {{AlertName}}",
+                    "alertDescriptionFormat": "(MDIoT) {{Description}}",
+                    "alertTacticsColumnName": "Tactics",
+                    "alertSeverityColumnName": "AlertSeverity"
+                },
+                "queryFrequency": "PT3H",
+                "queryPeriod": "PT3H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "eventGroupingSettings": {
+                    "aggregationKind": "AlertPerResult"
+                },
+                "severity": "Low",
+                "query": "SecurityAlert\n| where ProductName == \"Azure Security Center for IoT\"\n| where AlertName == \"Abnormal Traffic Bandwidth\" \nor AlertName == \"Abnormal Traffic Bandwidth Between Devices\" \nor AlertName == \"ARP Spoofing\" \nor AlertName == \"ICMP Flooding\"\n| extend DeviceId = tostring(parse_json(ExtendedProperties).DeviceId)\n| extend SourceDeviceAddress = tostring(parse_json(ExtendedProperties).SourceDeviceAddress)\n| extend DestDeviceAddress = tostring(parse_json(ExtendedProperties).DestinationDeviceAddress)\n| extend RemediationSteps = tostring(parse_json(RemediationSteps)[0])\n| extend Protocol = tostring(parse_json(ExtendedProperties).Protocol)\n| project\n  TimeGenerated,\n  DeviceId,\n  ProductName,\n  ProductComponentName,\n  AlertSeverity,\n  AlertName,\n  Description,\n  Protocol,\n  SourceDeviceAddress,\n  DestDeviceAddress,\n  RemediationSteps,\n  Tactics,\n  AlertLink\n",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "Impact"
+                ],
+                "displayName": "High bandwidth in the network (Microsoft Defender for IoT)",
+                "enabled": false,
+                "description": "This alert leverages Defender for IoT to detect an unusually high bandwidth which may be an indication of a new service/process or malicious activity on the network. An example scenario is a cyber threat attempting to manipulate the SCADA network.",
+                "alertRuleTemplateName": null
+            },
+            "apiVersion": "2021-09-01-preview"
+        }
+    ]
+}

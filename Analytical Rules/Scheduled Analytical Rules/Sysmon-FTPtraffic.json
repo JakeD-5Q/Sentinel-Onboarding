@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/ddec354b-554f-402f-ac03-200066ee31d8')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/ddec354b-554f-402f-ac03-200066ee31d8')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "Event\r\n| where RenderedDescription has \"DestinationPort: 21\"\r\nor RenderedDescription has \"SourcePort: 21\"\r\n| extend AccountCustomEntity = UserName\r\n| extend HostCustomEntity = Computer",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+        "tactics": [],
+        "displayName": "Sysmon - FTP traffic",
+        "enabled": true,
+        "description": "Syslog is showing data from port 21 (FTP). This is an unsecure protocol.",
+        "alertRuleTemplateName": null
+    },
+    "apiVersion": "2021-09-01-preview"
+}
+]
+}

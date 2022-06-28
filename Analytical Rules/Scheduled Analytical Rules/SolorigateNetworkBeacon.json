@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/4ea5c837-12e1-4787-a940-d7bc7751313a')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/4ea5c837-12e1-4787-a940-d7bc7751313a')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "query": "let domains = dynamic([\"incomeupdate.com\",\"zupertech.com\",\"databasegalore.com\",\"panhardware.com\",\"avsvmcloud.com\",\"digitalcollege.org\",\"freescanonline.com\",\"deftsecurity.com\",\"thedoccloud.com\",\"virtualdataserver.com\",\"lcomputers.com\",\"webcodez.com\",\"globalnetworkissues.com\",\"kubecloud.com\",\"seobundlekit.com\",\"solartrackingsystem.net\",\"virtualwebdata.com\"]);\nlet timeframe = 6h;\n(union isfuzzy=true\n(CommonSecurityLog \n  | where TimeGenerated >= ago(timeframe) \n  | parse Message with * '(' DNSName ')' * \n  | where DNSName in~ (domains) or DestinationHostName has_any (domains) or RequestURL has_any(domains)\n  | extend AccountCustomEntity = SourceUserID, HostCustomEntity = DeviceName, IPCustomEntity = SourceIP\n  ),\n(DnsEvents \n  | where TimeGenerated >= ago(timeframe) \n  | extend DNSName = Name\n  | where isnotempty(DNSName)\n  | where DNSName in~ (domains)\n  | extend IPCustomEntity = ClientIP\n  ),\n(VMConnection \n  | where TimeGenerated >= ago(timeframe) \n  | parse RemoteDnsCanonicalNames with * '[\"' DNSName '\"]' *\n  | where isnotempty(DNSName)\n  | where DNSName in~ (domains)\n  | extend IPCustomEntity = RemoteIp\n  ),\n(DeviceNetworkEvents \n  | where TimeGenerated >= ago(timeframe) \n  | where isnotempty(RemoteUrl) \n  | where RemoteUrl  has_any (domains)  \n  | extend DNSName = RemoteUrl\n  | extend IPCustomEntity = RemoteIP \n  | extend HostCustomEntity = DeviceName \n  ) \n  )",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "CommandAndControl"
+            ],
+            "displayName": "Solorigate Network Beacon",
+            "enabled": true,
+            "description": "Identifies a match across various data feeds for domains IOCs related to the Solorigate incident.\n References: https://blogs.microsoft.com/on-the-issues/2020/12/13/customers-protect-nation-state-cyberattacks/, \n https://www.fireeye.com/blog/threat-research/2020/12/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor.html?1",
+            "alertRuleTemplateName": "cecdbd4c-4902-403c-8d4b-32eb1efe460b"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

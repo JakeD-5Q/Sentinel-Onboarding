@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/b3204ff0-e170-4eb8-b4a0-8fd5f93b32f6')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/b3204ff0-e170-4eb8-b4a0-8fd5f93b32f6')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "Telnet traffic detected",
+                "order": 17,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b2906a61-9a4f-4e6c-8f5d-bc86870988fc')]"
+                            }
+                        },
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "HostName",
+                                "operator": "Equals",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/5q-cdavis-157 5q-aperez-157')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": "Closed",
+                            "classification": "BenignPositive",
+                            "classificationReason": "SuspiciousButExpected",
+                            "classificationComment": null,
+                            "owner": null,
+                            "labels": null
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": null,
+                            "classification": null,
+                            "classificationReason": null,
+                            "classificationComment": null,
+                            "owner": {
+                                "objectId": "8ca2fbd0-263f-4bb8-86f5-6eee0ca77f74",
+                                "email": "Sentinel@5qcloud.com",
+                                "assignedTo": "Sentinel",
+                                "userPrincipalName": "Sentinel@5qcloud.com"
+                            },
+                            "labels": null
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

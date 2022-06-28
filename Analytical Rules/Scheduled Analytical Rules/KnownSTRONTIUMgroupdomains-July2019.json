@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/449d457c-bbd2-4de0-90ee-1fc247e95945')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/449d457c-bbd2-4de0-90ee-1fc247e95945')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "query": "let timeframe = 1d;\nlet DomainNames = dynamic([\"irf.services\",\"microsoft-onthehub.com\",\"msofficelab.com\",\"com-mailbox.com\",\"my-sharefile.com\",\"my-sharepoints.com\",\n\"accounts-web-mail.com\",\"customer-certificate.com\",\"session-users-activities.com\",\"user-profile-credentials.com\",\"verify-linke.com\",\"support-servics.net\",\n\"onedrive-sharedfile.com\",\"onedrv-live.com\",\"transparencyinternational-my-sharepoint.com\",\"transparencyinternational-my-sharepoints.com\",\"soros-my-sharepoint.com\"]);\n(union isfuzzy=true\n(CommonSecurityLog \n| where TimeGenerated >= ago(timeframe) \n| parse Message with * '(' DNSName ')' * \n| extend Account = SourceUserID, Host = DeviceName, IPAddress = SourceIP),\n(DnsEvents \n| where TimeGenerated >= ago(timeframe) \n| extend IPAddress = ClientIP, DNSName = Name, Host = Computer),\n(VMConnection \n| where TimeGenerated >= ago(timeframe) \n| parse RemoteDnsCanonicalNames with * '[\"' DNSName '\"]' *\n| extend IPAddress = RemoteIp, Host = Computer)\n)\n| where isnotempty(DNSName)\n| where DNSName  in~ (DomainNames)\n| extend timestamp = TimeGenerated, IPCustomEntity = IPAddress, AccountCustomEntity = Account, HostCustomEntity = Host",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "CommandAndControl"
+            ],
+            "displayName": "Known STRONTIUM group domains - July 2019",
+            "enabled": true,
+            "description": "Matches domain name IOCs related to Strontium group activity published July 2019 with CommonSecurityLog, DnsEvents and VMConnection dataTypes.\nReferences: https://blogs.microsoft.com/on-the-issues/2019/07/17/new-cyberthreats-require-new-ways-to-protect-democracy/.",
+            "alertRuleTemplateName": "074ce265-f684-41cd-af07-613c5f3e6d0d"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

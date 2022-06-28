@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/30b911d5-632c-4ba0-98ab-2d39583ee1f2')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/30b911d5-632c-4ba0-98ab-2d39583ee1f2')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "Azure AD event outside of U.S.",
+                "order": 30,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b7ed79f3-59a4-4102-9451-3fe758eb3267')]"
+                            }
+                        },
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IPAddress",
+                                "operator": "Equals",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/223.197.4.130')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": "Closed",
+                            "classification": "BenignPositive",
+                            "classificationReason": "SuspiciousButExpected",
+                            "classificationComment": "The activity that caused this alert is not activity from the 5Q Partners tenant but from Gemini Rosemon and therfore should, if malicious,  should appear in an alert of their workspace.",
+                            "owner": null,
+                            "labels": null
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": null,
+                            "classification": null,
+                            "classificationReason": null,
+                            "classificationComment": null,
+                            "owner": {
+                                "objectId": "8ca2fbd0-263f-4bb8-86f5-6eee0ca77f74",
+                                "email": "Sentinel@5qcloud.com",
+                                "assignedTo": "Sentinel",
+                                "userPrincipalName": "Sentinel@5qcloud.com"
+                            },
+                            "labels": null
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

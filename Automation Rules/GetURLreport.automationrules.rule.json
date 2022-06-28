@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/5af2e15b-1c02-495d-ab40-184b6585d9e9')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/5af2e15b-1c02-495d-ab40-184b6585d9e9')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "Get URL report",
+                "order": 5,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/a632a90b-ce14-4e1e-a9fe-5b0e2049777e')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/resourceGroup().name/providers/Microsoft.Logic/workflows/', '5QC.Get-VirusTotalDomainReport')]",
+                            "tenantId": "f1a966c9-8958-4e13-bc44-f54c47cdbf9a"
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/resourceGroup().name/providers/Microsoft.Logic/workflows/', '5QC.Get-VirusTotalURLReport')]",
+                            "tenantId": "f1a966c9-8958-4e13-bc44-f54c47cdbf9a"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

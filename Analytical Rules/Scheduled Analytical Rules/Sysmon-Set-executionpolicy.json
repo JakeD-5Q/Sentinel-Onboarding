@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b26b3412-02c4-4e37-adc4-ce6cbfeee380')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/b26b3412-02c4-4e37-adc4-ce6cbfeee380')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "//the set-executionpolicy command is often used to bypass powershell code signing\r\nEvent\r\n| where RenderedDescription has \"Set-ExecutionPolicy\"\r\n| extend AccountCustomEntity = UserName\r\n| extend HostCustomEntity = Computer",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+        "tactics": [],
+        "displayName": "Sysmon - Set-executionpolicy",
+        "enabled": true,
+        "description": "the set-executionpolicy command is often used to bypass powershell code signing",
+        "alertRuleTemplateName": null
+    },
+    "apiVersion": "2021-09-01-preview"
+}
+]
+}

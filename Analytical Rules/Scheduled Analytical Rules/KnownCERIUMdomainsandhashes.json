@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/66303224-4f2b-4010-8a2c-21d2f02cae67')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/66303224-4f2b-4010-8a2c-21d2f02cae67')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "P1D",
+            "queryPeriod": "P1D",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "query": "let timeframe = 1d;\nlet DomainNames = \"miniodaum.ml\";\nlet SHA256Hash = dynamic ([\"53f5773bbfbfbee660989d135c042c9f6f69024b9a4b65bdc0dfd44771762257\", \"0897c80df8b80b4c49bf1ccf876f5f782849608b830c3b5cb3ad212dc3e19eff\"]);\n(union isfuzzy=true\n(CommonSecurityLog \n| where TimeGenerated >= ago(timeframe) \n| parse Message with * '(' DNSName ')' * \n| where isnotempty(FileHash)\n| where FileHash in (SHA256Hash) or DNSName =~ DomainNames\n| extend Account = SourceUserID, Computer = DeviceName, IPAddress = SourceIP\n),\n(DnsEvents \n| where TimeGenerated >= ago(timeframe) \n| extend DNSName = Name\n| where isnotempty(DNSName)\n| where DNSName =~ DomainNames\n| extend IPAddress = ClientIP\n),\n(VMConnection \n| where TimeGenerated >= ago(timeframe) \n| parse RemoteDnsCanonicalNames with * '[\"' DNSName '\"]' *\n| where isnotempty(DNSName)\n| where DNSName =~ DomainNames\n| extend IPAddress = RemoteIp\n)\n)\n| extend timestamp = TimeGenerated, AccountCustomEntity = Account, HostCustomEntity = Computer, IPCustomEntity = IPAddress",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "CommandAndControl",
+                "CredentialAccess"
+            ],
+            "displayName": "Known CERIUM domains and hashes",
+            "enabled": true,
+            "description": "CERIUM malicious webserver and hash values for maldocs and malware. \n Matches domain name IOCs related to the CERIUM activity group with CommonSecurityLog, DnsEvents, and VMConnection dataTypes.",
+            "alertRuleTemplateName": "c87fb346-ea3a-4c64-ba92-3dd383e0f0b5"
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

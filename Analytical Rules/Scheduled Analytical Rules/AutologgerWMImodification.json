@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f28a1203-b719-4c63-89dd-08f07421e7d3')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f28a1203-b719-4c63-89dd-08f07421e7d3')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "DeviceRegistryEvents\r\n| where RegistryKey has \"Autologger\"\r\n| where ActionType == \"registryvalueset\"\r\n| extend AccountCustomEntity = InitiatingProcessAccountUpn\r\n| extend HostCustomEntity = DeviceName\r\n| extend FileHashCustomEntity = InitiatingProcessMD5",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "DefenseEvasion"
+            ],
+            "displayName": "Autologger WMI modification",
+            "enabled": true,
+            "description": "An autologger is a trace session that records events from user-mode and kernel-mode trace providers during the boot process. This feature lets you trace the actions of a trace provider while Windows is booting. Attackers will often disable autologger to avoid detection.",
+            "alertRuleTemplateName": null
+        },
+        "apiVersion": "2021-09-01-preview"
+    }
+]
+}

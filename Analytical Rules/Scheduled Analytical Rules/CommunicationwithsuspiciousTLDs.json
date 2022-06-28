@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/a632a90b-ce14-4e1e-a9fe-5b0e2049777e')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/a632a90b-ce14-4e1e-a9fe-5b0e2049777e')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "Low",
+    "query": "DeviceNetworkEvents\r\n| where RemoteUrl endswith \".click\" \r\nor RemoteUrl endswith \".club\" \r\nor RemoteUrl endswith \".download\" \r\nor RemoteUrl endswith \".xxx\" \r\nor RemoteUrl endswith \".xyz\" \r\n// or RemoteUrl endswith \".ru\" \r\nor RemoteUrl endswith \".pw\" \r\nor RemoteUrl endswith \".tk\" \r\nor RemoteUrl endswith \".ml\" \r\nor RemoteUrl endswith \".ga\" \r\nor RemoteUrl endswith \".gg\" \r\nor RemoteUrl endswith \".cf\" \r\nor RemoteUrl endswith \".su\"\r\n| where RemoteUrl !has \"windowsupdate.com\"\r\n| where RemoteUrl !has \"playground.xyz\"\r\n| where RemoteUrl !has \"yandex.ru\"\r\n| where RemoteUrl !has \"i.clean.gg\"\r\n| where RemoteUrl !has \"discord.gg\"\r\n| where RemoteUrl !has \"ml-api.io\"\r\n| where RemoteUrl !has \"s.ml-attr.com\"\r\n| where RemoteUrl !has \"charter.com\"\r\n| where RemoteUrl !has \"repositories.xyz\"\r\n| where RemoteUrl !has \"cdn.powerups.club\"\r\n| where RemoteUrl !has \"gitcdn.xyz\"\r\n| where RemoteUrl !has \"adriver.ru\"\r\n| where RemoteUrl !has \"adsniper.ru\"\r\n| where RemoteUrl !has \"ssp.profile.rambler.ru\"\r\n| where RemoteUrl <> \"https://nettools.club\"\r\n| extend AccountCustomEntity = InitiatingProcessAccountUpn\r\n| extend HostCustomEntity = DeviceName\r\n| extend IPCustomEntity = RemoteIP\r\n| extend URLCustomEntity = RemoteUrl",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "CommandAndControl"
+    ],
+    "displayName": "Communication with suspicious TLDs",
+    "enabled": true,
+    "description": "A machine has communicated with a suspicious top level domain.",
+    "alertRuleTemplateName": null
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

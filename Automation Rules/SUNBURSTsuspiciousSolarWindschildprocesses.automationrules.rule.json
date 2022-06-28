@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/be5b0570-0978-4e8e-8124-086ded6bd2a8')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/be5b0570-0978-4e8e-8124-086ded6bd2a8')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/automationRules",
+            "properties": {
+                "displayName": "SUNBURST suspicious SolarWinds child processes",
+                "order": 29,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f51cfce3-2e90-4f8b-babf-ededa4e8abf5')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": "Closed",
+                            "classification": "BenignPositive",
+                            "classificationReason": "SuspiciousButExpected",
+                            "classificationComment": null,
+                            "owner": null,
+                            "labels": null
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": null,
+                            "classification": null,
+                            "classificationReason": null,
+                            "classificationComment": null,
+                            "owner": {
+                                "objectId": "8ca2fbd0-263f-4bb8-86f5-6eee0ca77f74",
+                                "email": "Sentinel@5qcloud.com",
+                                "assignedTo": "Sentinel",
+                                "userPrincipalName": "Sentinel@5qcloud.com"
+                            },
+                            "labels": null
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

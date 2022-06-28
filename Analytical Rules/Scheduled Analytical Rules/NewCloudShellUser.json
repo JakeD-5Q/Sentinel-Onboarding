@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/2157d9e9-871c-4a4a-b3fa-610cdc16c463')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/2157d9e9-871c-4a4a-b3fa-610cdc16c463')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+        }
+    },
+    "entityMappings": [
+        {
+            "entityType": "Account",
+            "fieldMappings": [
+                {
+                    "identifier": "FullName",
+                    "columnName": "AccountCustomEntity"
+                }
+            ]
+        },
+        {
+            "entityType": "IP",
+            "fieldMappings": [
+                {
+                    "identifier": "Address",
+                    "columnName": "IPCustomEntity"
+                }
+            ]
+        }
+    ],
+    "queryFrequency": "PT5M",
+    "queryPeriod": "PT5M",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "eventGroupingSettings": {
+        "aggregationKind": "SingleAlert"
+    },
+    "severity": "Low",
+    "query": "AzureActivity\n| extend message = tostring(parse_json(Properties).message)\n| extend AppId = tostring(parse_json(Claims).appid)\n| where AppId contains \"c44b4083-3bb0-49c1-b47d-974e53cbdf3c\"\n| where OperationNameValue =~ \"Microsoft.Portal/consoles/write\"\n| extend timestamp = TimeGenerated, AccountCustomEntity = Caller, IPCustomEntity = CallerIpAddress",
+    "suppressionDuration": "PT5H",
+    "suppressionEnabled": false,
+    "tactics": [
+        "Execution"
+    ],
+    "displayName": "New CloudShell User",
+    "enabled": true,
+    "description": "Identifies when a user creates an Azure CloudShell for the first time.\nMonitor this activity to ensure only expected user are using CloudShell",
+    "alertRuleTemplateName": "6d7214d9-4a28-44df-aafb-0910b9e6ae3e"
+},
+"apiVersion": "2021-09-01-preview"
+}
+]
+}

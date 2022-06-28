@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/dd8406a5-efa6-453d-96c7-7a01a599b32e')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/dd8406a5-efa6-453d-96c7-7a01a599b32e')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5M",
+                        "matchingMethod": "Selected",
+                        "groupByEntities": [
+                            "IP"
+                        ],
+                        "groupByAlertDetails": [
+                            "DisplayName"
+                        ],
+                        "groupByCustomDetails": null
+                    }
+                },
+                "customDetails": {
+                    "Protocol": "Protocol",
+                    "Sensor": "DeviceId"
+                },
+                "entityMappings": [
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "SourceDeviceAddress"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "DestDeviceAddress"
+                            }
+                        ]
+                    }
+                ],
+                "alertDetailsOverride": {
+                    "alertDisplayNameFormat": "(MDIoT) {{AlertName}}",
+                    "alertDescriptionFormat": "(MDIoT) {{Description}}",
+                    "alertTacticsColumnName": "Tactics",
+                    "alertSeverityColumnName": "AlertSeverity"
+                },
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "eventGroupingSettings": {
+                    "aggregationKind": "AlertPerResult"
+                },
+                "severity": "Medium",
+                "query": "SecurityAlert\n| where ProductName == \"Azure Security Center for IoT\"\n| where AlertName == \"Beckhoff Software Changed\" \nor AlertName contains \"Firmware Version Changed\"\nor AlertName contains \"Firmware Change\"\nor AlertName contains \"Firmware Changed\"\nor AlertName contains \"Firmware Update\"\n| extend DeviceId = tostring(parse_json(ExtendedProperties).DeviceId)\n| extend SourceDeviceAddress = tostring(parse_json(ExtendedProperties).SourceDeviceAddress)\n| extend DestDeviceAddress = tostring(parse_json(ExtendedProperties).DestinationDeviceAddress)\n| extend RemediationSteps = tostring(parse_json(RemediationSteps)[0])\n| extend Protocol = tostring(parse_json(ExtendedProperties).Protocol)\n| project\n  TimeGenerated,\n  DeviceId,\n  ProductName,\n  ProductComponentName,\n  AlertSeverity,\n  AlertName,\n  Description,\n  Protocol,\n  SourceDeviceAddress,\n  DestDeviceAddress,\n  RemediationSteps,\n  Tactics,\n  AlertLink\n",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "Persistence"
+                ],
+                "displayName": "Firmware Updates (Microsoft Defender for IoT)",
+                "enabled": true,
+                "description": "This alert leverages Defender for IoT to detect unauthorized firmware updates that may indicate malicious activity on the network such as a cyber threat that attempts to manipulate PLC firmware to compromise PLC function.",
+                "alertRuleTemplateName": null
+            },
+            "apiVersion": "2021-09-01-preview"
+        }
+    ]
+}

@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/019513ed-6cf2-4259-8acc-23d5a6f00d9f')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/019513ed-6cf2-4259-8acc-23d5a6f00d9f')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "properties": {
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                    "groupByEntities": [],
+                    "groupByAlertDetails": null,
+                    "groupByCustomDetails": null
+                }
+            },
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "triggerOperator": "GreaterThan",
+            "triggerThreshold": 0,
+            "eventGroupingSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "Medium",
+            "query": "Event\r\n| where RenderedDescription has \"DestinationPort: 23\"\r\nor RenderedDescription has \"SourcePort: 23\"\r\n| extend AccountCustomEntity = UserName\r\n| extend HostCustomEntity = Computer",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+        "tactics": [],
+        "displayName": "Sysmon - Telnet traffic detected",
+        "enabled": true,
+        "description": "Telnet was detected and is an unsecure protocol.",
+        "alertRuleTemplateName": null
+    },
+    "apiVersion": "2021-09-01-preview"
+}
+]
+}
