@@ -1,0 +1,509 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/e9db7ceb-2999-4c56-85ed-8f97d8e21a0e')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/e9db7ceb-2999-4c56-85ed-8f97d8e21a0e')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "MLBehaviorAnalytics",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "enabled": true,
+                "alertRuleTemplateName": "737a2ce1-70a3-4968-9e90-3e6aca836abf"
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/3ff4eed4-c66c-4271-a9fc-954655ce5a10')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/3ff4eed4-c66c-4271-a9fc-954655ce5a10')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "MLBehaviorAnalytics",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "enabled": true,
+                "alertRuleTemplateName": "fa118b98-de46-4e94-87f9-8e6d5060b60b"
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/55fb333e-0fe0-4f96-ac07-1f536ffda1bf')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/55fb333e-0fe0-4f96-ac07-1f536ffda1bf')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "ThreatIntelligence",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "enabled": true,
+                "alertRuleTemplateName": "0dd422ee-e6af-4204-b219-f59ac172e4c6",
+                "description": "This rule generates an alert when a Microsoft Threat Intelligence Indicator gets matched with your event logs. The alerts are very high fidelity.\n\nNote : It is advised to turn off any custom alert rules which match the threat intelligence indicators with the same event logs matched by this analytics to prevent duplicate alerts.",
+                "displayName": "(Preview) Microsoft Threat Intelligence Analytics",
+                "severity": "Medium",
+                "tactics": [
+                    "Persistence",
+                    "LateralMovement"
+                ],
+                "techniques": []
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/BuiltInFusion')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/BuiltInFusion')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Fusion",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "enabled": true,
+                "alertRuleTemplateName": "f71aba3d-28fb-450b-b192-4e76a83015c8",
+                "sourceSettings": [
+                    {
+                        "enabled": true,
+                        "sourceName": "Anomalies",
+                        "sourceSubTypes": null
+                    },
+                    {
+                        "enabled": true,
+                        "sourceName": "Alert providers",
+                        "sourceSubTypes": [
+                            {
+                                "sourceSubTypeDisplayName": "Azure Active Directory Identity Protection",
+                                "sourceSubTypeName": "Azure Active Directory Identity Protection",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft 365 Defender",
+                                "sourceSubTypeName": "Microsoft 365 Defender",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Cloud App Security",
+                                "sourceSubTypeName": "Microsoft Cloud App Security",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Defender for Cloud",
+                                "sourceSubTypeName": "Azure Defender",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Defender for Endpoint",
+                                "sourceSubTypeName": "Microsoft Defender for Endpoint",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Defender for Identity",
+                                "sourceSubTypeName": "Microsoft Defender for Identity",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Defender for IoT",
+                                "sourceSubTypeName": "Azure Defender for IoT",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Microsoft Defender for Office 365",
+                                "sourceSubTypeName": "Microsoft Defender for Office 365",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Azure Sentinel scheduled analytics rules",
+                                "sourceSubTypeName": "Azure Sentinel scheduled analytics rules",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "sourceSubTypeDisplayName": "Azure Sentinel NRT analytic rules",
+                                "sourceSubTypeName": "Azure Sentinel NRT analytic rules",
+                                "enabled": true,
+                                "severityFilters": {
+                                    "isSupported": true,
+                                    "filters": [
+                                        {
+                                            "severity": "High",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Medium",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Low",
+                                            "enabled": true
+                                        },
+                                        {
+                                            "severity": "Informational",
+                                            "enabled": true
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "scenarioExclusionPatterns": []
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/cf315fde-45f4-4d10-a5ce-70896f06af5b')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/cf315fde-45f4-4d10-a5ce-70896f06af5b')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "NRT",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "NRT Azure Active Directory Hybrid Health AD FS New Server",
+                "description": "This detection uses AzureActivity logs (Administrative category) to identify the creation or update of a server instance in an Azure AD Hybrid health AD FS service.\nA threat actor can create a new AD Health ADFS service and create a fake server instance to spoof AD FS signing logs. There is no need to compromise an on-prem AD FS server.\nThis can be done programmatically via HTTP requests to Azure. More information in this blog: https://o365blog.com/post/hybridhealthagent/",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "AzureActivity\n| where CategoryValue == 'Administrative'\n| where ResourceProviderValue =~ 'Microsoft.ADHybridHealthService'\n| where _ResourceId contains 'AdFederationService'\n| where OperationNameValue =~ 'Microsoft.ADHybridHealthService/services/servicemembers/action'\n| extend claimsJson = parse_json(Claims)\n| extend AppId = tostring(claimsJson.appid)\n| extend AccountName = tostring(claimsJson.name)\n| project-away claimsJson",
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "DefenseEvasion"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": "ec491363-5fe7-4eff-b68e-f42dcb76fcf6",
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "Caller"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "CallerIpAddress"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": "1.0.0"
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/738b247c-ea5d-4b63-a28b-cb5b8e2492f8')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/738b247c-ea5d-4b63-a28b-cb5b8e2492f8')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "NRT",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "NRT New access credential added to Application or Service Principal",
+                "description": "This will alert when an admin or app owner account adds a new credential to an Application or Service Principal where a verify KeyCredential was already present for the app.\nIf a threat actor obtains access to an account with sufficient privileges and adds the alternate authentication material triggering this event, the threat actor can now authenticate as the Application or Service Principal using this credential.\nAdditional information on OAuth Credential Grants can be found in RFC 6749 Section 4.4 or https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow\nFor further information on AuditLogs please see https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-audit-activities.",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "AuditLogs\n| where OperationName has_any (\"Add service principal\", \"Certificates and secrets management\")\n| where Result =~ \"success\"\n| mv-expand target = TargetResources\n| where tostring(InitiatedBy.user.userPrincipalName) has \"@\" or tostring(InitiatedBy.app.displayName) has \"@\"\n| extend targetDisplayName = tostring(TargetResources[0].displayName)\n| extend targetId = tostring(TargetResources[0].id)\n| extend targetType = tostring(TargetResources[0].type)\n| extend keyEvents = TargetResources[0].modifiedProperties\n| mv-expand keyEvents\n| where keyEvents.displayName =~ \"KeyDescription\"\n| extend new_value_set = parse_json(tostring(keyEvents.newValue))\n| extend old_value_set = parse_json(tostring(keyEvents.oldValue))\n| where old_value_set != \"[]\"\n| extend diff = set_difference(new_value_set, old_value_set)\n| where isnotempty(diff)\n| parse diff with * \"KeyIdentifier=\" keyIdentifier:string \",KeyType=\" keyType:string \",KeyUsage=\" keyUsage:string \",DisplayName=\" keyDisplayName:string \"]\" *\n| where keyUsage == \"Verify\"  or keyUsage == \"\"\n| extend UserAgent = iff(AdditionalDetails[0].key == \"User-Agent\",tostring(AdditionalDetails[0].value),\"\")\n| extend InitiatingUserOrApp = iff(isnotempty(InitiatedBy.user.userPrincipalName),tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\n| extend InitiatingIpAddress = iff(isnotempty(InitiatedBy.user.ipAddress), tostring(InitiatedBy.user.ipAddress), tostring(InitiatedBy.app.ipAddress))\n// The below line is currently commented out but Microsoft Sentinel users can modify this query to show only Application or only Service Principal events in their environment\n//| where targetType =~ \"Application\" // or targetType =~ \"ServicePrincipal\"\n| project-away diff, new_value_set, old_value_set\n| project-reorder TimeGenerated, OperationName, InitiatingUserOrApp, InitiatingIpAddress, UserAgent, targetDisplayName, targetId, targetType, keyDisplayName, keyType, keyUsage, keyIdentifier, CorrelationId, TenantId",
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "DefenseEvasion"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": "e42e889a-caaf-4dbb-aec6-371b37d64298",
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "InitiatingUserOrApp"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "InitiatingIpAddress"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": "1.0.0"
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/803fa15a-049d-41cd-bbd4-20ee63204df2')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/803fa15a-049d-41cd-bbd4-20ee63204df2')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "NRT",
+            "apiVersion": "2021-10-01-preview",
+            "properties": {
+                "displayName": "NRT User added to Azure Active Directory Privileged Groups",
+                "description": "This will alert when a user is added to any of the Privileged Groups.\nFor further information on AuditLogs please see https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-audit-activities.\nFor Administrator role permissions in Azure Active Directory please see https://docs.microsoft.com/azure/active-directory/users-groups-roles/directory-assign-admin-roles",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let OperationList = dynamic([\"Add member to role\",\"Add member to role in PIM requested (permanent)\"]);\nlet PrivilegedGroups = dynamic([\"UserAccountAdmins\",\"PrivilegedRoleAdmins\",\"TenantAdmins\"]);\nAuditLogs\n//| where LoggedByService =~ \"Core Directory\"\n| where Category =~ \"RoleManagement\"\n| where OperationName in~ (OperationList)\n| mv-expand TargetResources\n| extend modProps = parse_json(TargetResources).modifiedProperties\n| mv-expand bagexpansion=array modProps\n| evaluate bag_unpack(modProps)\n| extend displayName = column_ifexists(\"displayName\", \"NotAvailable\"), newValue = column_ifexists(\"newValue\", \"NotAvailable\")\n| where displayName =~ \"Role.WellKnownObjectName\"\n| extend DisplayName = displayName, GroupName = replace('\"','',newValue)\n| extend initByApp = parse_json(InitiatedBy).app, initByUser = parse_json(InitiatedBy).user\n| extend AppId = initByApp.appId,\nInitiatedByDisplayName = case(isnotempty(initByApp.displayName), initByApp.displayName, isnotempty(initByUser.displayName), initByUser.displayName, \"not available\"),\nServicePrincipalId = tostring(initByApp.servicePrincipalId),\nServicePrincipalName = tostring(initByApp.servicePrincipalName),\nUserId = initByUser.id,\nUserIPAddress = initByUser.ipAddress,\nUserRoles = initByUser.roles,\nUserPrincipalName = tostring(initByUser.userPrincipalName),\nTargetUserPrincipalName = tostring(TargetResources.userPrincipalName)\n| where GroupName in~ (PrivilegedGroups)\n// If you don't want to alert for operations from PIM, remove below filtering for MS-PIM.\n//| where InitiatedByDisplayName != \"MS-PIM\"\n| project TimeGenerated, AADOperationType, Category, OperationName, AADTenantId, AppId, InitiatedByDisplayName, ServicePrincipalId, ServicePrincipalName, DisplayName, GroupName, UserId, UserIPAddress, UserRoles, UserPrincipalName, TargetUserPrincipalName\n| extend AccountCustomEntity = case(isnotempty(ServicePrincipalName), ServicePrincipalName, isnotempty(ServicePrincipalId), ServicePrincipalId, isnotempty(UserPrincipalName), UserPrincipalName, \"not available\")",
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [
+                    "Persistence",
+                    "PrivilegeEscalation"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": "70fc7201-f28e-4ba7-b9ea-c04b96701f13",
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "AccountCustomEntity"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "FullName",
+                                "columnName": "TargetUserPrincipalName"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": "1.0.0"
+            }
+        }
+    ]
+}
