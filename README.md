@@ -3,7 +3,7 @@ resources for quick sentinel deployments and configurations
 
 ## Complete Sentinel Deployment Instructions
 
-1. Deploy lighthouse using the templates and the script found in the [5Q templates]() directory.
+1. Deploy lighthouse using the templates and the script found in the [5Q templates](https://github.com/JakeD-5Q/Sentinel-Onboarding/tree/main/Azure%20Lighthouse/5Q%20Templates) directory.
 
 2. Create a new resource group for the Sentinel workspace
     - using naming convention:  rg-5q-sentinel

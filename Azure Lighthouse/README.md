@@ -1,8 +1,18 @@
 # Azure Lighthouse
 
-[Documentation](https://docs.microsoft.com/en-us/azure/lighthouse/)
+## Instructions
 
-1. Upload a copy of the 5Q template directory to the new customer's cloudshell session
-2. Connect to Azure AD (run: Connect-AzureAD)
-3. Navigate to the "5Q templates" folder and then run the deployLighthouse.ps1
-4. Signout, then back in to company account to view the new tenant
+1. Copy the '5Q templates.zip' directory to a local location. 
+2. Ensure the contents of all files in the directory are as expected
+3. Zip the directory
+4. Drag & Drop it into the new client's Azure Cloud Shell
+5. Extract the directory within cloudshell (unzip "5Q Templates.zip")
+6. Connect to Azure Active Directory before deploying (Connect-AzureAD)
+7. Execute the powershell shell script (.\deployLighthouse.ps1)
+8. Log out and back into your 5Q Azure account once a deploy was successful to add the subscription to your "view"
+
+---
+
+## Links
+
+[Documentation](https://docs.microsoft.com/en-us/azure/lighthouse/)
