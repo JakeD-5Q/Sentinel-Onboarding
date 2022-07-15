@@ -36,13 +36,21 @@ Install the solution/Enable the Data connector for the following sources:
 - Azure Active Directory *Check all available logs to be ingested*
 - Azure Active Directory Identity Protection
 - Azure Activity *Create a remediation task*
-- Azure Information Protection 
+- Azure Information Protection
 - Microsoft Defender 365 *In the Defender console, enable the 'Advanced Features'*
-    - Microsoft Defender for Endpoint
-    - Microsoft Defender for Identity
-    - Microsoft Defender for Office 365
-    - Microsoft Defender for Cloud Apps *Check Cloud discovery logs*
+-- Microsoft Defender for Endpoint
+
+-- Microsoft Defender for Identity
+
+-- Microsoft Defender for Office 365
+
+-- Microsoft Defender for Cloud Apps 
+        
+*Check Cloud discovery logs*
 *Add Microsoft Sentinel as the SIEM under security configurations, configure settings*
-    - Microsoft Defender Alert Evidence
-    - Threat & Vulnerability Management
+
+-- Microsoft Defender Alert Evidence
+
+-- Threat & Vulnerability Management
+
 - Office 365 *Check Exchange, SharePoint, and Teams*
