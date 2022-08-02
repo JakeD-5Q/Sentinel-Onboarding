@@ -1,8 +1,8 @@
 param(
-    [Parameter(Mandatory = $true)]$location
+    [Parameter(Mandatory = $true)]$Location
 )
 
-$location = 'centralus'
+
 $Resource = 'LightHouse'
 $TemplateFile = 'lighthouse.template.json'
 $ParameterFile = 'lighthouse.parameters.json'
@@ -13,8 +13,9 @@ $suffix = Get-Random -Maximum 100
 $deploySuffix = $today + "_$suffix"
 $DeploymentName = $deploySuffix + "_$Resource"
 
+
 New-AzDeployment -Name $DeploymentName `
-    -Location $location `
+    -Location $Location `
     -TemplateFile $TemplateFile `
     -TemplateParameterFile $ParameterFile `
     -Verbose
