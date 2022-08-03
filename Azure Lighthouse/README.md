@@ -16,3 +16,7 @@
 ## Links
 
 [Documentation](https://docs.microsoft.com/en-us/azure/lighthouse/)
+
+# Deploy
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJakeD-5Q%2FSentinel-Onboarding%2Fmain%2FAzure%2520Lighthouse%2Flighthouse.template.json)
