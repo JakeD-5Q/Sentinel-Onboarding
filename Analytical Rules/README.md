@@ -9,17 +9,18 @@ This folder contains all of the default analytical rules that we use for Seninte
 
 Informational
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](<https://portal.azure.com/#create/Microsoft.Template/uri/>
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJakeD-5Q%2FSentinel-Onboarding%2Fmain%2FAnalytical%2520Rules%2FAzure_Sentinel_analytics_rules%2520%28Informational%29.json)
+
 
 Low
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](<https://portal.azure.com/#create/Microsoft.Template/uri/>
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJakeD-5Q%2FSentinel-Onboarding%2Fmain%2FAnalytical%2520Rules%2FAzure_Sentinel_analytics_rules%2520%28Low%29.json)
 
 Medium
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](<https://portal.azure.com/#create/Microsoft.Template/uri/>
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJakeD-5Q%2FSentinel-Onboarding%2Fmain%2FAnalytical%2520Rules%2FAzure_Sentinel_analytics_rules%2520%28Medium%29.json)
 
 High
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](<https://portal.azure.com/#create/Microsoft.Template/uri/>
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJakeD-5Q%2FSentinel-Onboarding%2Fmain%2FAnalytical%2520Rules%2FAzure_Sentinel_analytics_rules%2520%28High%29.json)
