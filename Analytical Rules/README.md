@@ -4,6 +4,10 @@ Analytical rules are responsible for the creation of Microsoft Sentinel incident
 
 ![Analytics Blade](/images/analytics.png)
 
+All templates can be deployed at the same time if you run the [deploy script](/Analytical%20Rules/deploy.ps1) but download or copy the [parameters file](/Analytical%20Rules/Azure_Sentinel_analytics_rules.parameters.json) and enter the name of the Azure Log Analytics Workspace that your Sentinel is located in. Now, you can run the script.
+
+
+
 # Deploy
 
 Informational
