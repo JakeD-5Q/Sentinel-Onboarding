@@ -2,8 +2,7 @@
 
 Analytical rules are responsible for the creation of Microsoft Sentinel incidents. This folder contains all of the rules that we use by default for all of our customers. These can be imported using the portal in the Analytics blade or the button below.
 
-
-This folder contains all of the default analytical rules that we use for Senintel
+![Analytics Blade](images/analytics.png)
 
 # Deploy
 
