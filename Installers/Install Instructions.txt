@@ -1,6 +1,0 @@
-The deployment of this can be automated using Group Policy or Intune, but if installing manually you can extract these and run the following command from the commandline:
-
-MOMAgentX64.msi /qn NOAPM=1 ADD_OPINSIGHTS_WORKSPACE=1 OPINSIGHTS_WORKSPACE_AZURE_CLOUD_TYPE=0 OPINSIGHTS_WORKSPACE_ID="Enter-Workspace-ID" OPINSIGHTS_WORKSPACE_KEY="<Enter-Key>" AcceptEndUserLicenseAgreement=1
-
-The next step is to install Sysmon using the following command:
-sysmon.exe -accepteula -i sysmonconfig-export.xml

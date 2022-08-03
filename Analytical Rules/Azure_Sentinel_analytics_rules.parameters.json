@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "workspace": {
-            "value": "Azure_Sentinel_analytics_rules.parameters.json" 
+            "value": "" 
         }
     }
 }
