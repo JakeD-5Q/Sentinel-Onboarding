@@ -28,7 +28,6 @@ Upon completing the initial deployment, we must add all content and connect data
 
 - [ ] Connect Azure Activity logs from the Log Analytics Workspace blade
 - [ ] Turn on UEBA from the Sentinel Settings (must be global or security admin)
-    - this may have to connect data sources first
 - [ ] Give permissions to the resource groups that hold Sentinel Playbooks
 
 ### Data connectors
