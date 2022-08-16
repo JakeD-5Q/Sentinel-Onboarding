@@ -42,29 +42,39 @@ Install the solution/Enable the Data connector for the following sources:
 -  [ ] Azure Activity 
    - [ ] *Create a remediation task*, follow the wizard's steps
 - [ ] Azure Information Protection
-- Microsoft Defender 365 
-  - [ ] *In the Defender console, enable the 'Advanced Features'*
+- [ ] Microsoft Defender 365 
+  - [ ] *In the [Defender console](https://security.microsoft.com/homepage), enable the 'Advanced Features'*
 - [ ] Microsoft Defender for Endpoint
 - [ ] Microsoft Defender for Identity
 - [ ] Microsoft Defender for Office 365
 - [ ] Microsoft Defender for Cloud Apps
-  - [ ] In the [CloudAppSecurity portal](https://portal.cloudappsecurity.com/#/dashboard), Connect O365 and Azure
-  ![](images\cloud_apps_task1.png)
     - [ ] *Check Cloud discovery logs*
+    - [ ] In the [CloudAppSecurity portal](https://portal.cloudappsecurity.com/#/dashboard), Connect O365 and Azure
+  ![](images\cloud_apps_task1.png)
     - [ ] Add Microsoft Sentinel as the SIEM 
+    - [ ] Go to settings (top right of page)
+      - [ ] Microsoft Defender for Endpoint tab: check enforce app access
+      - [ ] Check user enrichment
+      - [ ] Enable Microsoft Defender for Identity data integration
+      - [ ] Enable Azure AD Identity Protection alert integration
+      - [ ] Enable App Governance integration
   
 | Step 1 | Step 2|
 --- | --- |
  ![](images/cloud_apps_task2.png) | ![](images/cloud_apps_task2b2.png) |
 Settings (Top right of page) > Security Extentions | On the page, SIEM Agents > Add SIEM agent
+
+
 - [ ] Microsoft Defender Alert Evidence
 - [ ] Threat & Vulnerability Management
 - [ ] Office 365 
   - [ ] *Check Exchange, SharePoint, and Teams*
   
-## Deploy Playbook for Reporting
+## Report Playbook
 
 Once we have connected all of the data sources that we need, we will go to the Microsoft Sentinel's community Github repository and deploy the [M365-Security-Posture](https://github.com/Azure/Azure-Sentinel/tree/master/Playbooks/M365-Security-Posture) logic app. This playbook grabs Microsoft Defender data and ingests it into tables in the same Log Analytics workspace as Sentinel. This is a required step in our Onboarding process.
+
+Detailed directions can be found [here](https://github.com/Azure/Azure-Sentinel/tree/master/Playbooks/M365-Security-Posture)
 
 #### Deployment Preparation
 
@@ -77,14 +87,13 @@ Once we have connected all of the data sources that we need, we will go to the M
   - [ ] SecurityRecommendation.Read.All
   - [ ] Vulnerability.Read.All
 - Crate an app secret, record it immediately
-- record the object Id and tenant Id
+- record the object Id and tenant Id (Overview blade)
 - Grab workspace Id and the primary key from the Log Analytics workspace blade
 
-Then deploy
+Then deploy, using the information gathered above for the parameters.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzure-Sentinel%2Fmaster%2FPlaybooks%2FM365-Security-Posture%2Fazuredeploy.json)
 
 
-Detailed directions can be found at the link above.
 
 
