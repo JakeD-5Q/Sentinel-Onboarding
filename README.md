@@ -50,14 +50,17 @@ Install the solution/Enable the Data connector for the following sources:
 - [ ] Microsoft Defender for Cloud Apps
     - [ ] *Check Cloud discovery logs*
     - [ ] In the [CloudAppSecurity portal](https://portal.cloudappsecurity.com/#/dashboard), Connect O365 and Azure
+  
   ![](images\cloud_apps_task1.png)
-    - [ ] Add Microsoft Sentinel as the SIEM 
+    - [ ] Add Microsoft Sentinel as the SIEM
     - [ ] Go to settings (top right of page)
       - [ ] Microsoft Defender for Endpoint tab: check enforce app access
       - [ ] Check user enrichment
       - [ ] Enable Microsoft Defender for Identity data integration
       - [ ] Enable Azure AD Identity Protection alert integration
       - [ ] Enable App Governance integration
+      - [ ] Microsoft Information Protection: check all boxes, grant permissions
+      - [ ] Enable file monitoring
   
 | Step 1 | Step 2|
 --- | --- |
