@@ -2,6 +2,8 @@
 
 resources for quick sentinel deployments and configurations
 
+---
+
 ## Microsoft Sentinel workspace setup
 
 1. Deploy lighthouse using the templates and the script found in the [5Q templates](https://github.com/JakeD-5Q/Sentinel-Onboarding/tree/main/Azure%20Lighthouse/5Q%20Templates) directory.
@@ -21,6 +23,7 @@ All of these steps can be completed by using the button below. All variable valu
 
 [![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzure-Sentinel%2Fmaster%2FTools%2FSentinel-All-In-One%2FARMTemplates%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzure-Sentinel%2Fmaster%2FTools%2FSentinel-All-In-One%2FARMTemplates%2FcreateUiDefinition.json)
 
+---
 
 ## Sentinel Configuration and Setup
 
@@ -34,44 +37,46 @@ Upon completing the initial deployment, we must add all content and connect data
 
 I find it useful to add the data connectors that you can using the Solutions (content hub) because it does more than just connect, often it will automatically perform the steps found in the 'Next steps' tab.
 
-Install the solution/Enable the Data connector for the following sources:
+Install the solution/Enable the Data connector for the following sources
 
-- [ ] Azure Active Directory 
+- [ ] Azure Active Directory
   - [ ] *Check all available logs to be ingested*
+
 - [ ] Azure Active Directory Identity Protection
--  [ ] Azure Activity 
-   - [ ] *Create a remediation task*, follow the wizard's steps
+
+- [ ] Azure Activity
+  - [ ] *Create a remediation task*, follow the wizard's steps
+
 - [ ] Azure Information Protection
-- [ ] Microsoft Defender 365 
+
+- [ ] Microsoft Defender 365
+  - [ ] Enable the log collection and table creation for all items listed  
   - [ ] *In the [Defender console](https://security.microsoft.com/homepage), enable the 'Advanced Features'*
+
 - [ ] Microsoft Defender for Endpoint
+
 - [ ] Microsoft Defender for Identity
+
 - [ ] Microsoft Defender for Office 365
+
 - [ ] Microsoft Defender for Cloud Apps
-    - [ ] *Check Cloud discovery logs*
-    - [ ] In the [CloudAppSecurity portal](https://portal.cloudappsecurity.com/#/dashboard), Connect O365 and Azure
+  - [ ] **Data connector page:** *Check Cloud discovery logs*  
+
+  Then go to the [**CloudAppSecurity portal**](https://portal.cloudappsecurity.com/#/dashboard) and complete the following tasks:
+  - [ ] Connect O365 and Azure  using the side bar as shown below  
+      ![](images\cloud_apps_task1.png)
   
-  ![](images\cloud_apps_task1.png)
-    - [ ] Add Microsoft Sentinel as the SIEM
-    - [ ] Go to settings (top right of page)
-      - [ ] Microsoft Defender for Endpoint tab: check enforce app access
-      - [ ] Check user enrichment
-      - [ ] Enable Microsoft Defender for Identity data integration
-      - [ ] Enable Azure AD Identity Protection alert integration
-      - [ ] Enable App Governance integration
-      - [ ] Microsoft Information Protection: check all boxes, grant permissions
-      - [ ] Enable file monitoring
-  
+
 | Step 1 | Step 2|
 --- | --- |
  ![](images/cloud_apps_task2.png) | ![](images/cloud_apps_task2b2.png) |
-Settings (Top right of page) > Security Extentions | On the page, SIEM Agents > Add SIEM agent
-
-
-- [ ] Microsoft Defender Alert Evidence
-- [ ] Threat & Vulnerability Management
-- [ ] Office 365 
+Settings (Top right of page) > Security Extentions | On the page, SIEM Agents > Add SIEM agent 
+- [ ] Office 365
   - [ ] *Check Exchange, SharePoint, and Teams*
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+---
   
 ## Report Playbook
 
@@ -97,6 +102,4 @@ Then deploy, using the information gathered above for the parameters.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzure-Sentinel%2Fmaster%2FPlaybooks%2FM365-Security-Posture%2Fazuredeploy.json)
 
-
-
-
+<p align="right">(<a href="#top">back to top</a>)</p>
